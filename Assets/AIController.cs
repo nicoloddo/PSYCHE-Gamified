@@ -207,7 +207,7 @@ public class AIController : MonoBehaviour
             }
 
             StartCoroutine(SlowTime(0.01f, time_amount));
-            choiceController.StartProgressBar(time_amount);
+            choiceController.StartProgressBarChoice(time_amount);
 
         
         return step + 1;

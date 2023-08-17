@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ChoiceController : MonoBehaviour
 {
+    private DatabaseCommunicator db;
     private GameManager gameManager;
     public ProgressBarController progressBar;
     public GameObject terminate_m;
@@ -15,6 +16,7 @@ public class ChoiceController : MonoBehaviour
     {
         terminate_m.SetActive(false);
         gameManager = FindObjectOfType<GameManager>();
+        db = FindObjectOfType<DatabaseCommunicator>();
     }
 
     // Update is called once per frame
@@ -49,13 +51,30 @@ public class ChoiceController : MonoBehaviour
         }
     }
 
+    /*
     public void StartProgressBar(float time_amount)
     {
         progressBar.StartProgressBar(time_amount);
+    }
+    */
+
+    public void StartProgressBarChoice(float time_amount)
+    {
+        progressBar.StartProgressBarChoice(time_amount);
     }
 
     public void ShowTerminateMenu()
     {
         terminate_m.SetActive(true);
+    }
+
+    public void SendData(string function)
+    {
+        if(function == "ChoiceTimeExpired()" && ! terminate_m.activeSelf)
+        {
+            return;
+        }
+
+        db.SendData(function);
     }
 }

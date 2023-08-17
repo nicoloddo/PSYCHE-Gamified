@@ -7,6 +7,7 @@ using TMPro;
 public class UIController : MonoBehaviour
 {
     private GameManager gameManager;
+    public GameObject terminate_m_wrapper, terminate_m;
     public GameObject heart, heart1, heart2, heart3, heart4;
     private GameObject[] hearts;
 
@@ -112,6 +113,15 @@ public class UIController : MonoBehaviour
     {
         Cursor.visible = false;
 
+        if (pause_m.activeSelf)
+        {
+            terminate_m_wrapper.SetActive(false);
+        }
+        else
+        {
+            terminate_m_wrapper.SetActive(true);
+        }
+
         // WIN OR LOSE DISPLAY
         if (gameManager.GetWonOrLost() != 0)
         {
@@ -190,10 +200,13 @@ public class UIController : MonoBehaviour
         // PAUSE MENU
         if (Input.GetKeyDown(KeyCode.Escape) && Time.timeScale != 0 && gameManager.GetWonOrLost() == 0)
         {
-            prev_timescale = Time.timeScale;
-            Time.timeScale = 0;
-            pause_m.SetActive(true);
-            difficulty_s.GetComponent<SliderController>().UpdateText();
+            if (! terminate_m.activeSelf)
+            {
+                prev_timescale = Time.timeScale;
+                Time.timeScale = 0;
+                pause_m.SetActive(true);
+                difficulty_s.GetComponent<SliderController>().UpdateText();
+            }            
         }
 
         if (continue_b.GetComponent<ButtonController>().continue_click)

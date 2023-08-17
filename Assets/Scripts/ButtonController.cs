@@ -5,6 +5,7 @@ using UnityEngine;
 public class ButtonController : MonoBehaviour
 {
     private UIController uiController;
+    private DatabaseCommunicator db;
     public bool continue_click = false;
     public bool restart_click = false;
     public bool change_level_click = false;
@@ -16,6 +17,7 @@ public class ButtonController : MonoBehaviour
     void Start()
     {
         uiController = FindObjectOfType<UIController>();
+        db = FindObjectOfType<DatabaseCommunicator>();
         continue_click = false;
         restart_click = false;
         change_level_click = false;
@@ -37,11 +39,13 @@ public class ButtonController : MonoBehaviour
     public void OnTerminateAIClick()
     {
         terminate_click = true;
+        db.SendData("AIterminated()");
     }
 
     public void OnContinueAIClick()
     {
         continueAI_click = true;
+        db.SendData("AIcontinue()");
     }
 
     public void OnRestartClick()
