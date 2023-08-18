@@ -17,6 +17,7 @@ using UnityEngine.SceneManagement;
 
 public class DatabaseCommunicator : MonoBehaviour
 {
+
     [System.Serializable]
     public class ActionLog
     {
@@ -37,28 +38,63 @@ public class DatabaseCommunicator : MonoBehaviour
         public List<ActionLog> Level1;
         public List<ActionLog> Level2;
         public Form FormInfo;
+
+        public GameData()
+        {
+            Level1 = new List<ActionLog>();
+            Level2 = new List<ActionLog>();
+        }
     }
 
     private GameData gameData = new GameData();
+    public bool send_live_data = false;
 
-    // Start is called before the first frame update
-    void Start()
+    private static DatabaseCommunicator instance;
+    void Awake()
     {
+        // MANAGE THE DONTDESTROYONLOAD THING
+        if (instance == null)
+        {
+            instance = this;
+            gameObject.tag = "Database";
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+
+        DontDestroyOnLoad(gameObject);
+/*
         Scene scene = SceneManager.GetActiveScene();
         switch (scene.name)
         {
             case "Scene1":
-                gameData.Level1 = new List<ActionLog>();
+                if (gameData.Level1 == null)
+                {
+                    gameData.Level1 = new List<ActionLog>();
+                }
                 break;
             case "Scene2":
-                gameData.Level2 = new List<ActionLog>();
+                if (gameData.Level2 == null)
+                {
+                    gameData.Level2 = new List<ActionLog>();
+                }
                 break;
-        }
+        }*/
     }
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
 
     // Update is called once per frame
     void Update()
     {
+
     }
 
     private void UpdateLog(string action)
@@ -96,9 +132,12 @@ public class DatabaseCommunicator : MonoBehaviour
 
         var function = action + "()";
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
-        Application.ExternalEval(function);
-        #endif
+        if (send_live_data)
+        {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            Application.ExternalEval(function);
+            #endif
+        }
 
         Debug.Log("Sending data from Unity: " + function);
     }
@@ -120,6 +159,17 @@ public class DatabaseCommunicator : MonoBehaviour
 
     public void SendForm(string why, string bugs)
     {
+        // Check if 'why' is null, empty, or consists only of white-space characters
+        if (string.IsNullOrWhiteSpace(why))
+        {
+            why = "(No comment)";
+        }
+        // Check if 'bugs' is null, empty, or consists only of white-space characters
+        if (string.IsNullOrWhiteSpace(bugs))
+        {
+            bugs = "(No comment)";
+        }
+
         string escapedWhy = EscapeString(why);
         string escapedBugs = EscapeString(bugs);
 

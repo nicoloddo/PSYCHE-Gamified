@@ -19,7 +19,6 @@ public class ChoiceController : MonoBehaviour
     {
         terminate_m.SetActive(false);
         gameManager = FindObjectOfType<GameManager>();
-        db = FindObjectOfType<DatabaseCommunicator>();
     }
 
     // Update is called once per frame
@@ -73,6 +72,8 @@ public class ChoiceController : MonoBehaviour
 
     public void SendAction(string action)
     {
+        db = FindObjectOfType<DatabaseCommunicator>();
+
         if(action == "ChoiceTimeExpired" && ! terminate_m.activeSelf)
         {
             return;
@@ -83,11 +84,13 @@ public class ChoiceController : MonoBehaviour
 
     public void SendFullData()
     {
+        db = FindObjectOfType<DatabaseCommunicator>();
         db.SendFullData();
     }
 
     public void SendForm()
     {
+        db = FindObjectOfType<DatabaseCommunicator>();
         db.SendForm(why.text, bugs.text);
     }
 }
