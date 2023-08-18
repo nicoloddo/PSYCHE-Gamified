@@ -14,12 +14,14 @@ public class UIController : MonoBehaviour
     public TextMeshProUGUI e1_n, b2_n, e2_n, e3_n, e4_n, b1_n;
     private TextMeshProUGUI[] enemies_n_text;
 
-    public GameObject title_t, welcome_t, difficulty_t;
-    public bool restart_bool, change_level_bool;
+    public GameObject title_t, welcome_t, difficulty_t, thank_you_t;
+    public bool restart_bool, change_level_bool, next_level_bool, finish_bool, submit_bool;
     public GameObject continue_b, reset_b, difficulty_s, autodifficulty_toggle;
-    public GameObject pause_m, gameover, youwon;
+    public GameObject pause_m, form_m, gameover, youwon;
+    public GameObject health;
     public TextMeshProUGUI enemies_t, enemies_survived_t, score_t, score_t2, record_t, difficulty_modifier_t, fictious_diff_modifier_t;
     private bool first_time = false;
+    private bool end_menu_displayed = false;
     public bool first_time_override = false;
     private float prev_timescale;
 
@@ -95,10 +97,12 @@ public class UIController : MonoBehaviour
 
         gameover.SetActive(false);
         youwon.SetActive(false);
+        form_m.SetActive(false);
 
         title_t.SetActive(false);
         difficulty_t.SetActive(false);
         welcome_t.SetActive(false);
+        thank_you_t.SetActive(false);
 
         if(first_time)
         {
@@ -106,6 +110,7 @@ public class UIController : MonoBehaviour
             PlayerPrefs.SetInt("FirstTime", 1);
         }
         
+        end_menu_displayed = false;
     }
 
     // Update is called once per frame
@@ -123,8 +128,10 @@ public class UIController : MonoBehaviour
         }
 
         // WIN OR LOSE DISPLAY
-        if (gameManager.GetWonOrLost() != 0)
+        if (gameManager.GetWonOrLost() != 0 && ! end_menu_displayed)
         {
+            end_menu_displayed = true;
+
             Time.timeScale = 1.1f;
             int outcome = gameManager.GetWonOrLost();
             if(outcome == -1) // lost
@@ -193,9 +200,12 @@ public class UIController : MonoBehaviour
         }
 
         // ENEMIES COUNTER
-        enemies_t.text = "Enemies: " + gameManager.GetEnemiesCount().ToString() + "/" + gameManager.GetEnemiesTotal().ToString();
-        enemies_survived_t.text = "Survived: " + gameManager.GetEnemiesSurvivedCount().ToString();
-        fictious_diff_modifier_t.text = "Diff. Bonus: " + gameManager.GetInstantDifficultyModifier().ToString("F2") + "x";
+        if (gameManager.GetWonOrLost() == 0) // if the game is still going
+        {
+            enemies_t.text = "Enemies: " + gameManager.GetEnemiesCount().ToString() + "/" + gameManager.GetEnemiesTotal().ToString();
+            enemies_survived_t.text = "Survived: " + gameManager.GetEnemiesSurvivedCount().ToString();
+            fictious_diff_modifier_t.text = "Diff. Bonus: " + gameManager.GetInstantDifficultyModifier().ToString("F2") + "x";
+        }
 
         // PAUSE MENU
         if (Input.GetKeyDown(KeyCode.Escape) && Time.timeScale != 0 && gameManager.GetWonOrLost() == 0)
@@ -240,6 +250,38 @@ public class UIController : MonoBehaviour
             gameManager.ChangeLevel();
             Time.timeScale = 1;
             pause_m.SetActive(false);
+        }
+
+        // NEXT LEVEL
+        if (next_level_bool)
+        {
+            next_level_bool = false;
+            gameManager.ChangeLevel();
+            Time.timeScale = 1;
+            pause_m.SetActive(false);
+        }
+
+        if (finish_bool)
+        {
+            finish_bool = false;
+            Time.timeScale = 1;
+            pause_m.SetActive(false);
+            record_t.text = "";
+            health.SetActive(false);
+            enemies_t.text = "";
+            enemies_survived_t.text = "";
+
+            gameover.SetActive(false);
+            youwon.SetActive(false);
+
+            form_m.SetActive(true);
+        }
+
+        if (submit_bool)
+        {
+            submit_bool = false;
+            form_m.SetActive(false);
+            thank_you_t.SetActive(true);
         }
 
         // DIFFICULTY
@@ -290,7 +332,7 @@ public class UIController : MonoBehaviour
         }
 
         // MANAGE THE CURSOR
-        if (pause_m.activeSelf || youwon.activeSelf || gameover.activeSelf)
+        if (pause_m.activeSelf || youwon.activeSelf || gameover.activeSelf || form_m.activeSelf || thank_you_t.activeSelf)
         {
             gameManager.canvasCursorActive = true;
         } else

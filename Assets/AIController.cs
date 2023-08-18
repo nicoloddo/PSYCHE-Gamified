@@ -143,6 +143,11 @@ public class AIController : MonoBehaviour
     {
         float time_amount = 5f; // default
 
+        if (gameManager.GetWonOrLost() != 0)
+        {
+            return step;
+        }
+
         if(already_slow_time)
         {
             it_was_slow_time = true; // it means the conversation was started while the game was in slow time

@@ -42,7 +42,7 @@ public class ProgressBarController : MonoBehaviour
 
         if (send)
         {
-            cc.SendData("ChoiceTimeStarted()");
+            cc.SendAction("ChoiceTimeStarted");
         }
 
         // Track how much time has passed
@@ -69,7 +69,7 @@ public class ProgressBarController : MonoBehaviour
 
         if (send)
         {
-            cc.SendData("ChoiceTimeExpired()");
+            cc.SendAction("ChoiceTimeExpired");
         }
         
         gameObject.SetActive(false);

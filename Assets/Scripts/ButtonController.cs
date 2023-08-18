@@ -5,10 +5,13 @@ using UnityEngine;
 public class ButtonController : MonoBehaviour
 {
     private UIController uiController;
-    private DatabaseCommunicator db;
+    private ChoiceController cc;
     public bool continue_click = false;
     public bool restart_click = false;
     public bool change_level_click = false;
+    public bool next_level_click = false;
+    public bool finish_click = false;  
+    public bool submit_click = false;  
     public bool reset_click = false;
     public bool terminate_click = false;
     public bool continueAI_click = false;
@@ -17,10 +20,14 @@ public class ButtonController : MonoBehaviour
     void Start()
     {
         uiController = FindObjectOfType<UIController>();
-        db = FindObjectOfType<DatabaseCommunicator>();
+        cc = FindObjectOfType<ChoiceController>();
+
         continue_click = false;
         restart_click = false;
         change_level_click = false;
+        next_level_click = false;
+        finish_click = false;
+        submit_click = false;
         reset_click = false;
         terminate_click = false;
     }
@@ -39,25 +46,48 @@ public class ButtonController : MonoBehaviour
     public void OnTerminateAIClick()
     {
         terminate_click = true;
-        db.SendData("AIterminated()");
+        cc.SendAction("AIterminated");
     }
 
     public void OnContinueAIClick()
     {
         continueAI_click = true;
-        db.SendData("AIcontinue()");
+        cc.SendAction("AIcontinue");
     }
 
     public void OnRestartClick()
     {
         restart_click = true;
         uiController.restart_bool = true;
+        cc.SendAction("Restart");
     }
 
     public void OnChangeLevelClick()
     {
         change_level_click = true;
         uiController.change_level_bool = true;
+    }
+
+    public void OnNextLevelClick()
+    {
+        next_level_click = true;
+        uiController.next_level_bool = true;
+        cc.SendAction("NextLevel");
+        cc.SendFullData();
+    }
+
+    public void OnFinishClick()
+    {
+        finish_click = true;
+        uiController.finish_bool = true;
+        cc.SendFullData();
+    }
+
+    public void OnSubmitClick()
+    {
+        submit_click = true;
+        uiController.submit_bool = true;
+        cc.SendForm();
     }
 
     public void OnResetClick()

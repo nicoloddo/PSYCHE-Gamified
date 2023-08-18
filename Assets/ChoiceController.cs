@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class ChoiceController : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class ChoiceController : MonoBehaviour
     public ProgressBarController progressBar;
     public GameObject terminate_m;
     public GameObject terminateAI_b, continueAI_b;
+
+    public TextMeshProUGUI why, bugs;
 
 
     // Start is called before the first frame update
@@ -68,13 +71,23 @@ public class ChoiceController : MonoBehaviour
         terminate_m.SetActive(true);
     }
 
-    public void SendData(string function)
+    public void SendAction(string action)
     {
-        if(function == "ChoiceTimeExpired()" && ! terminate_m.activeSelf)
+        if(action == "ChoiceTimeExpired" && ! terminate_m.activeSelf)
         {
             return;
         }
 
-        db.SendData(function);
+        db.SendLiveData(action);
+    }
+
+    public void SendFullData()
+    {
+        db.SendFullData();
+    }
+
+    public void SendForm()
+    {
+        db.SendForm(why.text, bugs.text);
     }
 }

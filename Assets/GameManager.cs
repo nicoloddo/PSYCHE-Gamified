@@ -16,7 +16,9 @@ public class GameManager : MonoBehaviour
     private bool player_died;
     public float game_time;
     public float difficulty_time;
-    public PlayerModel playerModel;
+
+    private PlayerModel playerModel;
+    private ChoiceController cc;
 
 
     // PARAMETERS (The ones below are the DEFAULT. CHANGE THEM ONLY IN THE EDITOR)
@@ -70,6 +72,8 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerModel = FindObjectOfType<PlayerModel>();
+        cc = FindObjectOfType<ChoiceController>();
+
         int max_prescore = 100;
         playerModel.SetMax((int)playerHealth, max_prescore);
 
@@ -552,11 +556,13 @@ public class GameManager : MonoBehaviour
         }
 
         Debug.Log("You won!");
+        cc.SendAction("Win");
     }
 
     public void GameOver()
     {
         Debug.Log("Game Over.");
+        cc.SendAction("GameOver");
     }
 
     private void EndGame(bool won_bool)
