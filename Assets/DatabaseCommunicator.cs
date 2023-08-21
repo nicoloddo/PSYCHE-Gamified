@@ -128,7 +128,7 @@ public class DatabaseCommunicator : MonoBehaviour
     public void SendLiveData(string action)
     {
         UpdateLog(action);
-        Debug.Log(GetLogJSON());
+        //Debug.Log(GetLogJSON());
 
         var function = action + "()";
 
@@ -139,15 +139,15 @@ public class DatabaseCommunicator : MonoBehaviour
             #endif
         }
 
-        Debug.Log("Sending data from Unity: " + function);
+        //Debug.Log("Sending data from Unity: " + function);
     }
 
     public void SendFullData()
     {
         string logJSON = GetLogJSON();
 
-        Debug.Log("Sending data from Unity: " + "FinalData()");
-        Debug.Log(logJSON);
+        //Debug.Log("Sending data from Unity: " + "FinalData()");
+        //Debug.Log(logJSON);
 
         string escapedData = logJSON;
         string call = "FinalData('" + escapedData + "')";

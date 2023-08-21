@@ -122,6 +122,7 @@ GameObject:
   - component: {fileID: -7017416217625953307}
   - component: {fileID: -6548299151877296102}
   - component: {fileID: 3060677984856272960}
+  - component: {fileID: 2179153276752528943}
   m_Layer: 3
   m_Name: Robot
   m_TagString: Player
@@ -231,11 +232,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   engine_animator: {fileID: 5826766552048622590}
   explosion: {fileID: 4885191007091060029, guid: 0a05806479ba4b8469aef4112fc71d8b, type: 3}
+  explosion_shield: {fileID: 0}
   bullet: {fileID: 8310909566370082033, guid: ded7e386490dd4b4b9a5158c038c01e5, type: 3}
+  totalRotation: 0
+  last_dir: 1
+  shootDelay: 0.5
+  aimDelay: 1
+  delaysTimestep: 0.1
+  accumulatedTime: 0
+  shootSlowRate: 1
+  launchForce: 15
+  autoaimSpeed: 5
   bulletsToShoot: 1
   enemyDamage: 0
   bulletDamage: 1
   immunity_time: 0.5
+  aimed: 0
 --- !u!114 &1809568125176592199
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -248,6 +260,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65bbde23e982be949a4e4347f3a1b231, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  choiceCanvas: {fileID: 0}
+  remaining_enemies: 0
+  actual_enemies_total: 0
+  ratio_enemies: 0
+  conversation_step: 0
+  slowingTimeRate: 0.5
+  slowingTimeDuration: 5
+  RechargeSlowingAbilityDuration: 5
+  WaitToConversateDuration: 0.5
+  dont_conversate: 0
+  active_autonomous_slowtime: 1
+  active_shield: 1
+  active_autoaim: 1
+  bullet_hit_prediction: 1
 --- !u!114 &5123738749224528194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,3 +350,99 @@ CapsuleCollider2D:
   m_Offset: {x: -0.09, y: 0}
   m_Size: {x: 0.25, y: 0.4}
   m_Direction: 0
+--- !u!82 &2179153276752528943
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5826766552282885129}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

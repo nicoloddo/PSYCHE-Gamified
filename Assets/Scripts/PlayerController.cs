@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     //private CharacterController characterController;
     private Rigidbody2D rigidBody;
     private GameManager gameManager;
+    private SoundManager soundManager;
     public Animator engine_animator;
     public GameObject explosion;
     public GameObject explosion_shield;
@@ -60,6 +61,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        soundManager = FindObjectOfType<SoundManager>();
         animator = GetComponent<Animator>();
         //characterController = GetComponent<CharacterController>();      
         rigidBody = GetComponent<Rigidbody2D>();     
@@ -276,6 +278,7 @@ public class PlayerController : MonoBehaviour
     private void Fire(int amount)
     {
         animator.Play("shoot", 0, 0.25f);
+        soundManager.PlayShoot();
         GameObject bullet_obj;
         Vector2 spawnPosition = transform.position + bullet_offset * transform.right;
 
@@ -320,7 +323,7 @@ public class PlayerController : MonoBehaviour
 
             if (damage > 0)
             {
-                if(health == 1 && AI.active_shield) // final explosion is a shield
+                if((health == 1 || health == 3) && AI.active_shield) // final explosion is a shield
                 {
                     AI.ShieldConversation();
                     AI.active_shield = false;
@@ -330,6 +333,7 @@ public class PlayerController : MonoBehaviour
                 {
                     health -= damage;
                     Instantiate(explosion, transform.position, Quaternion.identity);
+                    soundManager.PlayLostLife();
                 }
             }            
         }        

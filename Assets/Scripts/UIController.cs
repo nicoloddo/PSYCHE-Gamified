@@ -213,6 +213,7 @@ public class UIController : MonoBehaviour
             if (! terminate_m.activeSelf)
             {
                 prev_timescale = Time.timeScale;
+                gameManager.PauseGame();
                 Time.timeScale = 0;
                 pause_m.SetActive(true);
                 difficulty_s.GetComponent<SliderController>().UpdateText();
@@ -222,6 +223,7 @@ public class UIController : MonoBehaviour
         if (continue_b.GetComponent<ButtonController>().continue_click)
         {
             pause_m.SetActive(false);
+            gameManager.ResumeGame();
             Time.timeScale = prev_timescale;
             continue_b.GetComponent<ButtonController>().continue_click = false;
         }

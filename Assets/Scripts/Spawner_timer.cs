@@ -91,10 +91,10 @@ public class Spawner_timer : MonoBehaviour
         {
             spawnTimer = 0; // Accumulated time
 
-            while (spawnTimer < interval_spawning / spawn_slow_rate)
+            while (spawnTimer < interval_spawning)
             {
                 yield return new WaitForSeconds(spawn_timestep);
-                spawnTimer += spawn_timestep;
+                spawnTimer += (spawn_timestep * spawn_slow_rate);
             }
             EnemySpawn();
         }

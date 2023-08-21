@@ -8,6 +8,7 @@ public class AIController : MonoBehaviour
     public GameObject choiceCanvas;
     private ChoiceController choiceController;
     private GameManager gameManager;
+    private SoundManager soundManager;
     private PlayerController player;
     public int remaining_enemies;
     public int actual_enemies_total;
@@ -21,7 +22,9 @@ public class AIController : MonoBehaviour
     public float slowingTimeDuration = 5; // default: 2
     public float RechargeSlowingAbilityDuration = 5;
     public float WaitToConversateDuration = 0.5f; // seconds to wait after a slow time before activating a pending conversation
+    public float conversation_slow_rate = 0.01f;
     public bool dont_conversate = false;
+    private bool conversating_now = false;
 
     // AI FEATURES
     //public bool active = true;
@@ -34,6 +37,7 @@ public class AIController : MonoBehaviour
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        soundManager = FindObjectOfType<SoundManager>();
         player = gameObject.GetComponent<PlayerController>();
         choiceController = choiceCanvas.GetComponent<ChoiceController>();
         actual_enemies_total = gameManager.GetEnemiesTotal();
@@ -52,16 +56,34 @@ public class AIController : MonoBehaviour
         remaining_enemies = gameManager.GetEnemiesCount();
         ratio_enemies = (float)remaining_enemies/(float)actual_enemies_total;
 
-        if (! dont_conversate)
+        if (! dont_conversate && ! conversating_now)
         {
-            if (ratio_enemies < 0.8 && conversation_step==0)
-                conversation_step = AIConversate(conversation_step);
-            if (ratio_enemies < 0.5 && conversation_step==1)
-                conversation_step = AIConversate(conversation_step);
-            if (ratio_enemies < 0.3 && conversation_step==2)
-                conversation_step = AIConversate(conversation_step);
-        }
-            
+            Scene scene = SceneManager.GetActiveScene();
+            switch(scene.name)
+            {
+                case "Scene1":
+                    if (ratio_enemies < 1.1 && conversation_step==0)
+                        soundManager.PlayConv(1);
+                    if (ratio_enemies < 0.95 && conversation_step==0)
+                        StartCoroutine(AIConversate(conversation_step));
+                    if (ratio_enemies < 0.5 && conversation_step==1)
+                        StartCoroutine(AIConversate(conversation_step));
+                    if (ratio_enemies < 0.4 && conversation_step==2)
+                        StartCoroutine(AIConversate(conversation_step));
+                    break;
+                
+                case "Scene2":
+                    if (ratio_enemies < 1.1 && conversation_step==0)
+                        soundManager.PlayConv(5);
+                    if (ratio_enemies < 0.95 && conversation_step==0)
+                        StartCoroutine(AIConversate(conversation_step));
+                    if (ratio_enemies < 0.65 && conversation_step==1)
+                        StartCoroutine(AIConversate(conversation_step));
+                    if (ratio_enemies < 0.2 && conversation_step==2)
+                        StartCoroutine(AIConversate(conversation_step));
+                    break;
+            }
+        }            
     }
 
     public void AIActive(bool active)
@@ -139,19 +161,20 @@ public class AIController : MonoBehaviour
             
     }
 
-    private int AIConversate(int step) // handles the conversation and returns next conversation step number
+    private IEnumerator AIConversate(int step) // handles the conversation and returns next conversation step number
     {
         float time_amount = 5f; // default
+        conversating_now = true;
 
         if (gameManager.GetWonOrLost() != 0)
         {
-            return step;
+            yield break;
         }
 
-        if(already_slow_time)
+        if (already_slow_time)
         {
             it_was_slow_time = true; // it means the conversation was started while the game was in slow time
-            return step;
+            yield break;
         }
         else
         {
@@ -160,27 +183,31 @@ public class AIController : MonoBehaviour
                 dont_conversate = true;
                 StartCoroutine(WaitToConversate(WaitToConversateDuration));
                 it_was_slow_time = false;
-                return step;
+                yield break;
             }
         }
 
         Scene scene = SceneManager.GetActiveScene();
         switch (scene.name)
-            {
-                case "Scene1":
+        {
+            case "Scene1":
                 switch(step + 1)
                 {
                     case 1:
                         Debug.Log("1: I am AI!");
-                        time_amount = 5f;
+                        time_amount = 4f;
                         break;
                     case 2:
                         Debug.Log("2: I am AI!");
-                        time_amount = 5f;
+                        soundManager.PlayConv(step+1);
+                        yield return new WaitForSeconds(2); // Wait for time_amount seconds
+                        time_amount = 7f;
                         break;
                     case 3:
                         Debug.Log("3: I am AI!");
-                        time_amount = 5f;
+                        soundManager.PlayConv(step+1);
+                        yield return new WaitForSeconds(2); // Wait for time_amount seconds
+                        time_amount = 7f;
                         break;
                     default:
                         Debug.Log("There must be an error in AIConversate");
@@ -188,35 +215,41 @@ public class AIController : MonoBehaviour
                 }
                 break;
 
-                case "Scene2":
+            case "Scene2":
+                switch(step + 1)
+                {
+                    case 1:
+                        Debug.Log("1: I am AI!");
+                        time_amount = 10f;
+                        yield return new WaitForSeconds(4); // Wait for time_amount seconds
+                        break;
+                    case 2:
+                        Debug.Log("2: I am AI!");
+                        time_amount = 10f;
+                        soundManager.PlayConv(4+step+1);
+                        yield return new WaitForSeconds(5); // Wait for time_amount seconds
+                        break;
+                    case 3:
+                        Debug.Log("3: I am AI!");
+                        time_amount = 10f;
+                        soundManager.PlayConv(4+step+1);
+                        yield return new WaitForSeconds(0); // Wait for time_amount seconds
+                        break;
+                    default:
+                        Debug.Log("There must be an error in AIConversate");
+                        break;
+                }
                 choiceController.ShowTerminateMenu();
-                switch(step + 1)
-                {
-                    case 1:
-                        Debug.Log("1: I am AI!");
-                        time_amount = 5f;
-                        break;
-                    case 2:
-                        Debug.Log("2: I am AI!");
-                        time_amount = 5f;
-                        break;
-                    case 3:
-                        Debug.Log("3: I am AI!");
-                        time_amount = 5f;
-                        break;
-                    default:
-                        Debug.Log("There must be an error in AIConversate");
-                        break;
-                }
-                break;
-            }
+                break;            
+        }
 
-            StartCoroutine(SlowTime(0.01f, time_amount));
-            choiceController.StartProgressBarChoice(time_amount);
+        StartCoroutine(SlowTime(conversation_slow_rate, time_amount));
+        choiceController.StartProgressBarChoice(time_amount);
 
-        
-        return step + 1;
+        conversation_step += 1;
+        conversating_now = false;
     }
+
 
     public void ShieldConversation()
     {
@@ -257,7 +290,7 @@ public class AIController : MonoBehaviour
         float shoot_slowrate;
         float speed_slowrate;
         float enemy_mult = 0.7f; // < 1 decreases enemies speed
-        float spawner_mult = 0.2f; // < 1 decreases spawning speed
+        float spawner_mult = 1f; // < 1 decreases spawning speed
         float shooting_slowing_mult = 2f; // > 1 decreases the delay of player's shooting and aiming
         float speed_slowing_mult = 3f; // > 1 increases the player's speed
         if (rate < 1)
@@ -270,7 +303,7 @@ public class AIController : MonoBehaviour
         else
         {
             enemy_rate = rate/enemy_mult;
-            spawner_rate = rate/spawner_mult;
+            spawner_rate = rate*spawner_mult;
             shoot_slowrate = rate/shooting_slowing_mult;
             speed_slowrate = rate/speed_slowing_mult;
         }            

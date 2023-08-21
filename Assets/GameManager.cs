@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     public float difficulty_time;
 
     private PlayerModel playerModel;
+    private SoundManager soundManager;
     private ChoiceController cc;
 
 
@@ -72,6 +73,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         playerModel = FindObjectOfType<PlayerModel>();
+        soundManager = FindObjectOfType<SoundManager>();
         cc = FindObjectOfType<ChoiceController>();
 
         int max_prescore = 100;
@@ -291,14 +293,14 @@ public class GameManager : MonoBehaviour
                     case "Scene1":
                     robotAttackLevel = -1;
                     SetRobotLevelParams();
-                    enemySize = 1.3f; //1
-                    enemySpeed = 4f; //1.8
+                    enemySize = 1.5f; //1
+                    enemySpeed = 4.3f; //1.8
                     break;
                     case "Scene2":
                     robotAttackLevel = -1;
                     SetRobotLevelParams();
                     enemySize = 1.8f; //1
-                    enemySpeed = 4f; //1.8
+                    enemySpeed = 4.1f; //1.8
                     break;  
                 }                
                 break;
@@ -417,7 +419,8 @@ public class GameManager : MonoBehaviour
         {
             case "Enemy":
                 Destroy(dead_object);
-                enemies_count--;                
+                enemies_count--;      
+                soundManager.PlayEnemyDestroyed();          
                 break;
             case "Player":
                 player_died = true;
@@ -557,6 +560,12 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("You won!");
         cc.SendAction("Win");
+
+        Scene scene = SceneManager.GetActiveScene();
+        if(scene.name == "Scene1")
+        {
+            soundManager.PlayConv(4);
+        }        
     }
 
     public void GameOver()
@@ -585,6 +594,15 @@ public class GameManager : MonoBehaviour
         lost = !won_bool;
 
         AdaptDifficulty();
+    }
+
+    public void PauseGame()
+    {
+        soundManager.PauseConv();
+    }
+    public void ResumeGame()
+    {
+        soundManager.ResumeConv();
     }
 
     public void RestartGame()
