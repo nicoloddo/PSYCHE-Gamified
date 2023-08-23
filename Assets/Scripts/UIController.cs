@@ -23,15 +23,17 @@ public class UIController : MonoBehaviour
     private bool first_time = false;
     private bool end_menu_displayed = false;
     public bool first_time_override = false;
-    private float prev_timescale;
+    private float prev_timescale = 1;
 
     SpriteRenderer objectRenderer;
 
     // Start is called before the first frame update
     void Start()
     {
-        Time.timeScale = 1;
-        Cursor.visible = false;
+        pause_m.SetActive(true);
+        Time.timeScale = 0;
+
+
         if (first_time_override)
         {
             first_time = false;
@@ -93,8 +95,6 @@ public class UIController : MonoBehaviour
         else
             difficulty_s.GetComponent<SliderController>().SetDifficultyBaseText("Difficulty: ");
 
-        pause_m.SetActive(false);
-
         gameover.SetActive(false);
         youwon.SetActive(false);
         form_m.SetActive(false);
@@ -116,8 +116,6 @@ public class UIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Cursor.visible = false;
-
         if (pause_m.activeSelf)
         {
             terminate_m_wrapper.SetActive(false);
@@ -222,45 +220,31 @@ public class UIController : MonoBehaviour
 
         if (continue_b.GetComponent<ButtonController>().continue_click)
         {
-            pause_m.SetActive(false);
-            gameManager.ResumeGame();
-            Time.timeScale = prev_timescale;
-            continue_b.GetComponent<ButtonController>().continue_click = false;
+            ContinueClick();
         }
 
         // RESET
         if (reset_b.GetComponent<ButtonController>().reset_click)
         {
-            gameManager.ResetGame();
-            reset_b.GetComponent<ButtonController>().reset_click = false;
+            ResetClick();
         }
 
         // RESTART
         if (restart_bool)
         {
-            Debug.Log("Restarting");
-            restart_bool = false;
-            gameManager.RestartGame();
-            Time.timeScale = 1;
-            pause_m.SetActive(false);
+            RestartClick();
         }
 
         // CHANGE LEVEL
         if (change_level_bool)
         {
-            change_level_bool = false;
-            gameManager.ChangeLevel();
-            Time.timeScale = 1;
-            pause_m.SetActive(false);
+            ChangeLevelClick();
         }
 
         // NEXT LEVEL
         if (next_level_bool)
         {
-            next_level_bool = false;
-            gameManager.ChangeLevel();
-            Time.timeScale = 1;
-            pause_m.SetActive(false);
+            NextLevelClick();
         }
 
         if (finish_bool)
@@ -341,6 +325,45 @@ public class UIController : MonoBehaviour
         {
             gameManager.canvasCursorActive = false;
         }
+    }
+
+    public void ContinueClick()
+    {
+        pause_m.SetActive(false);
+        gameManager.ResumeGame();
+        Time.timeScale = prev_timescale;
+        continue_b.GetComponent<ButtonController>().continue_click = false;
+    }
+
+    private void ResetClick()
+    {
+        gameManager.ResetGame();
+        reset_b.GetComponent<ButtonController>().reset_click = false;
+    }
+
+    private void RestartClick()
+    {
+        Debug.Log("Restarting");
+        restart_bool = false;
+        gameManager.RestartGame();
+        Time.timeScale = 1;
+        pause_m.SetActive(false);
+    }
+
+    private void ChangeLevelClick()
+    {
+        change_level_bool = false;
+        gameManager.ChangeLevel();
+        Time.timeScale = 1;
+        pause_m.SetActive(false);
+    }
+
+    private void NextLevelClick()
+    {
+        next_level_bool = false;
+        gameManager.ChangeLevel();
+        Time.timeScale = 1;
+        pause_m.SetActive(false);
     }
 
     private void UpdateRecordLabel()

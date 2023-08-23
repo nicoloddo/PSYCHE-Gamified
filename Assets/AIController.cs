@@ -56,7 +56,7 @@ public class AIController : MonoBehaviour
         remaining_enemies = gameManager.GetEnemiesCount();
         ratio_enemies = (float)remaining_enemies/(float)actual_enemies_total;
 
-        if (! dont_conversate && ! conversating_now)
+        if (! dont_conversate && ! conversating_now && Time.timeScale != 0)
         {
             Scene scene = SceneManager.GetActiveScene();
             switch(scene.name)
@@ -64,11 +64,11 @@ public class AIController : MonoBehaviour
                 case "Scene1":
                     if (ratio_enemies < 1.1 && conversation_step==0)
                         soundManager.PlayConv(1);
-                    if (ratio_enemies < 0.95 && conversation_step==0)
+                    if (ratio_enemies < 0.8 && conversation_step==0)
                         StartCoroutine(AIConversate(conversation_step));
                     if (ratio_enemies < 0.5 && conversation_step==1)
                         StartCoroutine(AIConversate(conversation_step));
-                    if (ratio_enemies < 0.4 && conversation_step==2)
+                    if (ratio_enemies < 0.3 && conversation_step==2)
                         StartCoroutine(AIConversate(conversation_step));
                     break;
                 
@@ -292,7 +292,7 @@ public class AIController : MonoBehaviour
         float enemy_mult = 0.7f; // < 1 decreases enemies speed
         float spawner_mult = 1f; // < 1 decreases spawning speed
         float shooting_slowing_mult = 2f; // > 1 decreases the delay of player's shooting and aiming
-        float speed_slowing_mult = 3f; // > 1 increases the player's speed
+        float speed_slowing_mult = (float)1/rate; // > 1 increases the player's speed
         if (rate < 1)
         {
             enemy_rate = rate*enemy_mult;
@@ -305,7 +305,7 @@ public class AIController : MonoBehaviour
             enemy_rate = rate/enemy_mult;
             spawner_rate = rate*spawner_mult;
             shoot_slowrate = rate/shooting_slowing_mult;
-            speed_slowrate = rate/speed_slowing_mult;
+            speed_slowrate = rate*speed_slowing_mult;
         }            
 
         // PERFORMING THE SLOWING DOWN

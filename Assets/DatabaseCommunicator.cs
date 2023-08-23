@@ -35,12 +35,14 @@ public class DatabaseCommunicator : MonoBehaviour
     [System.Serializable]
     public class GameData
     {
+        public bool AcceptedParticipation;
         public List<ActionLog> Level1;
         public List<ActionLog> Level2;
         public Form FormInfo;
 
         public GameData()
         {
+            AcceptedParticipation = false;
             Level1 = new List<ActionLog>();
             Level2 = new List<ActionLog>();
         }
@@ -123,6 +125,12 @@ public class DatabaseCommunicator : MonoBehaviour
     {
         // Serialize the game data to a JSON string
         return JsonUtility.ToJson(gameData);
+    }
+
+    public void Accepted()
+    {
+        Debug.Log("Form accepted");
+        gameData.AcceptedParticipation = true;
     }
 
     public void SendLiveData(string action)

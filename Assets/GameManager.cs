@@ -68,6 +68,7 @@ public class GameManager : MonoBehaviour
     private bool lost = false;
     public bool canvasCursorActive = false;
     public bool choiceCursorActive = false;
+    public bool introCursorActive = false;
 
     // Start is called before the first frame update
     void Start()
@@ -179,7 +180,7 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if(canvasCursorActive || choiceCursorActive)
+        if(canvasCursorActive || choiceCursorActive || introCursorActive)
         {
             Cursor.visible = true;
         } else
@@ -293,14 +294,14 @@ public class GameManager : MonoBehaviour
                     case "Scene1":
                     robotAttackLevel = -1;
                     SetRobotLevelParams();
-                    enemySize = 1.5f; //1
-                    enemySpeed = 4.3f; //1.8
+                    enemySize = 1f; //1.5
+                    enemySpeed = 4.3f; //4.3
                     break;
                     case "Scene2":
                     robotAttackLevel = -1;
                     SetRobotLevelParams();
-                    enemySize = 1.8f; //1
-                    enemySpeed = 4.1f; //1.8
+                    enemySize = 1.5f; //1.88
+                    enemySpeed = 4.1f; //4.1
                     break;  
                 }                
                 break;
@@ -627,6 +628,7 @@ public class GameManager : MonoBehaviour
     {
         AIController AI = player.GetComponent<AIController>();
         AI.AIActive(false);
+        soundManager.PlayTerminateAI();
     }
 
     public void ChangeLevel()

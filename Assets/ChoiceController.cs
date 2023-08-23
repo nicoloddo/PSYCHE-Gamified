@@ -70,8 +70,15 @@ public class ChoiceController : MonoBehaviour
         terminate_m.SetActive(true);
     }
 
+    public void SendAccepted()
+    {
+        db = FindObjectOfType<DatabaseCommunicator>();
+        db.Accepted();
+    }
+
     public void SendAction(string action)
     {
+        Debug.Log("Sending action: " + action);
         db = FindObjectOfType<DatabaseCommunicator>();
 
         if(action == "ChoiceTimeExpired" && ! terminate_m.activeSelf)

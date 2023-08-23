@@ -6,7 +6,7 @@ public class SoundManager : MonoBehaviour
 {
     public AudioSource audioSource, altAudioSource;  
     public AudioClip conv1, conv2, conv3, win, term1, term2, term3;
-    public AudioClip lostlife, shoot, enemydestroyed;
+    public AudioClip lostlife, shoot, enemydestroyed, terminate_ai;
     public AudioClip whitenoise;
 
     float whitenoise_volume = 0.3f;
@@ -35,6 +35,12 @@ public class SoundManager : MonoBehaviour
     public void PlayShoot()
     {
         altAudioSource.PlayOneShot(shoot, ui_sounds_volume);
+    }
+
+    public void PlayTerminateAI()
+    {
+        audioSource.Pause();
+        altAudioSource.PlayOneShot(terminate_ai, ui_sounds_volume);
     }
 
     public void PlayEnemyDestroyed()

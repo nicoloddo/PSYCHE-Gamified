@@ -214,7 +214,7 @@ public class PlayerController : MonoBehaviour
         float launchForce = GetLaunchForce() * shoot_slowrate;
         float autoaimSpeed = GetAutoaimSpeed() * shoot_slowrate;
         SetTimeParams(speed, launchForce, autoaimSpeed);
-        gameObject.GetComponent<Animator>().speed *= rate;
+        gameObject.GetComponent<Animator>().speed *= speed_slowrate;
     }
 
     public void SetTimeParams(float speed, float playerLaunchForce, float playerAutoaimSpeed)
