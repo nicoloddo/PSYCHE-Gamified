@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class IntroductionController : MonoBehaviour
 {
@@ -70,11 +69,6 @@ public class IntroductionController : MonoBehaviour
         gameManager.introCursorActive = false;
 
         std_canva.SetActive(true);
-        Scene scene = SceneManager.GetActiveScene();
-        if(scene.name == "Scene2")
-        {
-            std_canva.GetComponent<UIController>().ContinueClick();
-        }            
 
         // The following objects might contain this object
         first_panel.SetActive(false);

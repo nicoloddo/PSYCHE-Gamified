@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
     {
         inputVertical = Input.GetAxis("Vertical");
         inputHorizontal = Input.GetAxis("Horizontal");
-        inputRotation = Input.GetAxis("Rotation");
+        //inputRotation = Input.GetAxis("Rotation");
 
         // SHOOTING
         if(Input.GetKeyDown(KeyCode.Space))

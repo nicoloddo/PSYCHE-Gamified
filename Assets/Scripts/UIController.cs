@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class UIController : MonoBehaviour
 {
@@ -30,8 +31,16 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        pause_m.SetActive(true);
-        Time.timeScale = 0;
+        Scene scene = SceneManager.GetActiveScene();
+        if(scene.name == "Scene1")
+        {
+            pause_m.SetActive(true);
+            Time.timeScale = 0;
+        } else {
+            pause_m.SetActive(true);
+            Time.timeScale = 0;
+        }
+        
 
 
         if (first_time_override)
@@ -116,6 +125,9 @@ public class UIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(!form_m.activeSelf)
+            UpdatePointsLabel();
+
         if (pause_m.activeSelf)
         {
             terminate_m_wrapper.SetActive(false);
@@ -366,8 +378,9 @@ public class UIController : MonoBehaviour
         pause_m.SetActive(false);
     }
 
+
     private void UpdateRecordLabel()
-    {
+    { //This is overwritten by the function below
         if (PlayerPrefs.HasKey("Record"))
         {
             int record = PlayerPrefs.GetInt("Record");
@@ -378,6 +391,13 @@ public class UIController : MonoBehaviour
             record_t.text = "Your Record: -";
         }
     }
+    
+    private void UpdatePointsLabel()
+    { // In Psyche this overwrites the record label with a points label and a fake record below.
+        int killed = gameManager.GetEnemiesTotal() - gameManager.GetEnemiesCount() - gameManager.GetEnemiesSurvivedCount();
+        record_t.text = "Your Points: " + killed + "\nBest Record: 42";
+    }
+
     IEnumerator wait_and_display(float interval_s, GameObject to_display, GameObject to_display2, GameObject to_display3)
     {
         Time.timeScale = 0;

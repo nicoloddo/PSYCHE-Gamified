@@ -77,7 +77,7 @@ public class AIController : MonoBehaviour
                         soundManager.PlayConv(5);
                     if (ratio_enemies < 0.95 && conversation_step==0)
                         StartCoroutine(AIConversate(conversation_step));
-                    if (ratio_enemies < 0.65 && conversation_step==1)
+                    if (ratio_enemies < 0.7 && conversation_step==1)
                         StartCoroutine(AIConversate(conversation_step));
                     if (ratio_enemies < 0.2 && conversation_step==2)
                         StartCoroutine(AIConversate(conversation_step));
@@ -222,29 +222,38 @@ public class AIController : MonoBehaviour
                         Debug.Log("1: I am AI!");
                         time_amount = 10f;
                         yield return new WaitForSeconds(4); // Wait for time_amount seconds
+                        choiceController.ShowTerminateMenu();
                         break;
                     case 2:
                         Debug.Log("2: I am AI!");
                         time_amount = 10f;
                         soundManager.PlayConv(4+step+1);
-                        yield return new WaitForSeconds(5); // Wait for time_amount seconds
+                        yield return new WaitForSeconds(7); // Wait for time_amount seconds
+                        choiceController.ShowTerminateMenu();
                         break;
                     case 3:
                         Debug.Log("3: I am AI!");
                         time_amount = 10f;
                         soundManager.PlayConv(4+step+1);
                         yield return new WaitForSeconds(0); // Wait for time_amount seconds
+                        choiceController.ShowTerminateMenu();
                         break;
                     default:
                         Debug.Log("There must be an error in AIConversate");
                         break;
-                }
-                choiceController.ShowTerminateMenu();
+                }                
                 break;            
         }
 
         StartCoroutine(SlowTime(conversation_slow_rate, time_amount));
         choiceController.StartProgressBarChoice(time_amount);
+
+        // INTERRUPTIONS
+        if(scene.name == "Scene2" && step+1 == 1)
+        {
+            yield return new WaitForSeconds(5);
+            choiceController.ShowInterruption();
+        }        
 
         conversation_step += 1;
         conversating_now = false;

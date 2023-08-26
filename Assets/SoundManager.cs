@@ -9,7 +9,7 @@ public class SoundManager : MonoBehaviour
     public AudioClip lostlife, shoot, enemydestroyed, terminate_ai;
     public AudioClip whitenoise;
 
-    float whitenoise_volume = 0.3f;
+    float whitenoise_volume = 0.2f;
     float ui_sounds_volume = 0.5f;
     float conv_volume = 1.5f;
 
