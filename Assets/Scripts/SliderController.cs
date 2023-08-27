@@ -15,7 +15,6 @@ public class SliderController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        OnDifficultyChange();
         changed_difficulty = false;
     }
 
@@ -39,9 +38,37 @@ public class SliderController : MonoBehaviour
                 toAdd = "Hard";
                 break;
         }
-        UpdateText();
+        UpdateDifficultyText();
 
         changed_difficulty = true;
+    }
+
+    public void OnMOSChange()
+    {
+        string label;
+
+        switch((int)GetComponent<Slider>().value)
+        {
+            case 1:
+                label = "1 - Bad";
+                break;
+            case 2:
+                label = "2 - Poor";
+                break;
+            case 3:
+                label = "3 - Fair";
+                break;
+            case 4:
+                label = "4 - Good";
+                break;
+            case 5:
+                label = "5 - Excellent";
+                break;
+            default:
+                label = "";
+                break;
+        }
+        UpdateText(label);
     }
 
     public int GetDifficultyValue()
@@ -49,13 +76,26 @@ public class SliderController : MonoBehaviour
         return (int)GetComponent<Slider>().value;
     }
 
+    public int GetMOSValue()
+    {
+        return (int)GetComponent<Slider>().value;
+    }
+
     public void SetDifficultyBaseText(string b_text)
     {
         base_text = b_text;
-        UpdateText();
+        UpdateDifficultyText();
     }
-    public void UpdateText()
+
+    public void UpdateText(string label)
+    {
+        value_text.text = label;
+    }
+
+    public void UpdateDifficultyText()
     {
         value_text.text = base_text + toAdd;
     }
+
+
 }

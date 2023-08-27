@@ -16,6 +16,7 @@ public class ButtonController : MonoBehaviour
     public bool terminate_click = false;
     public bool continueAI_click = false;
     public bool interruption_continue_click = false;
+    public bool next_page_click = false;
 
     // Start is called before the first frame update
     void Start()
@@ -32,6 +33,7 @@ public class ButtonController : MonoBehaviour
         reset_click = false;
         terminate_click = false;
         interruption_continue_click = false;
+        next_page_click = false;
     }
 
     // Update is called once per frame
@@ -48,6 +50,11 @@ public class ButtonController : MonoBehaviour
     public void OnInterruptionContinueClick()
     {
         interruption_continue_click = true;
+    }
+
+    public void OnNextPageClick()
+    {
+        next_page_click = true;
     }
 
     public void OnTerminateAIClick()

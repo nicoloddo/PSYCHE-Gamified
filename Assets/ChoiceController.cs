@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
+using UnityEditor;
 
 public class ChoiceController : MonoBehaviour
 {
@@ -10,8 +12,12 @@ public class ChoiceController : MonoBehaviour
     public ProgressBarController progressBar;
     public GameObject terminate_m;
     public GameObject terminateAI_b, continueAI_b, interruption_b;
+    public SliderController MOSSlider;
+    public GameObject LowAttentionToggle;
 
     public TextMeshProUGUI why, bugs;
+    public int mos = -1;
+    public bool low_attention = false;
 
     public GameObject Interruption;
     public bool level2interruption_is_done = false;
@@ -66,6 +72,9 @@ public class ChoiceController : MonoBehaviour
             ContinueFromInterruption();
             interruption_b.GetComponent<ButtonController>().interruption_continue_click = false;
         }
+
+        mos = MOSSlider.GetMOSValue();
+        low_attention = LowAttentionToggle.GetComponent<Toggle>().isOn;
     }
 
     /*
@@ -131,6 +140,6 @@ public class ChoiceController : MonoBehaviour
     public void SendForm()
     {
         db = FindObjectOfType<DatabaseCommunicator>();
-        db.SendForm(why.text, bugs.text);
+        db.SendForm(why.text, bugs.text, mos, low_attention);
     }
 }

@@ -30,6 +30,8 @@ public class DatabaseCommunicator : MonoBehaviour
     {
         public string Why;
         public string Bugs;
+        public int MOS;
+        public bool LowAttention;
     }
 
     [System.Serializable]
@@ -66,23 +68,6 @@ public class DatabaseCommunicator : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-/*
-        Scene scene = SceneManager.GetActiveScene();
-        switch (scene.name)
-        {
-            case "Scene1":
-                if (gameData.Level1 == null)
-                {
-                    gameData.Level1 = new List<ActionLog>();
-                }
-                break;
-            case "Scene2":
-                if (gameData.Level2 == null)
-                {
-                    gameData.Level2 = new List<ActionLog>();
-                }
-                break;
-        }*/
     }
 
 
@@ -165,7 +150,7 @@ public class DatabaseCommunicator : MonoBehaviour
         #endif        
     }
 
-    public void SendForm(string why, string bugs)
+    public void SendForm(string why, string bugs, int mos, bool low_attention)
     {
         // Check if 'why' is null, empty, or consists only of white-space characters
         if (string.IsNullOrWhiteSpace(why))
@@ -184,7 +169,9 @@ public class DatabaseCommunicator : MonoBehaviour
         gameData.FormInfo = new Form
         {
             Why = escapedWhy,
-            Bugs = escapedBugs
+            Bugs = escapedBugs,
+            MOS = mos,
+            LowAttention = low_attention
         };
 
         SendFullData();

@@ -18,7 +18,7 @@ public class UIController : MonoBehaviour
     public GameObject title_t, welcome_t, difficulty_t, thank_you_t;
     public bool restart_bool, change_level_bool, next_level_bool, finish_bool, submit_bool;
     public GameObject continue_b, reset_b, difficulty_s, autodifficulty_toggle;
-    public GameObject pause_m, form_m, gameover, youwon;
+    public GameObject pause_m, form_m1, form_m2, gameover, youwon;
     public GameObject health;
     public TextMeshProUGUI enemies_t, enemies_survived_t, score_t, score_t2, record_t, difficulty_modifier_t, fictious_diff_modifier_t;
     private bool first_time = false;
@@ -106,7 +106,8 @@ public class UIController : MonoBehaviour
 
         gameover.SetActive(false);
         youwon.SetActive(false);
-        form_m.SetActive(false);
+        form_m1.SetActive(false);
+        form_m2.SetActive(false);
 
         title_t.SetActive(false);
         difficulty_t.SetActive(false);
@@ -125,7 +126,7 @@ public class UIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!form_m.activeSelf)
+        if(!form_m1.activeSelf && !form_m2.activeSelf)
             UpdatePointsLabel();
 
         if (pause_m.activeSelf)
@@ -226,7 +227,7 @@ public class UIController : MonoBehaviour
                 gameManager.PauseGame();
                 Time.timeScale = 0;
                 pause_m.SetActive(true);
-                difficulty_s.GetComponent<SliderController>().UpdateText();
+                difficulty_s.GetComponent<SliderController>().UpdateDifficultyText();
             }            
         }
 
@@ -272,13 +273,13 @@ public class UIController : MonoBehaviour
             gameover.SetActive(false);
             youwon.SetActive(false);
 
-            form_m.SetActive(true);
+            form_m1.SetActive(true);
         }
 
         if (submit_bool)
         {
             submit_bool = false;
-            form_m.SetActive(false);
+            form_m2.SetActive(false);
             thank_you_t.SetActive(true);
         }
 
@@ -330,7 +331,7 @@ public class UIController : MonoBehaviour
         }
 
         // MANAGE THE CURSOR
-        if (pause_m.activeSelf || youwon.activeSelf || gameover.activeSelf || form_m.activeSelf || thank_you_t.activeSelf)
+        if (pause_m.activeSelf || youwon.activeSelf || gameover.activeSelf || form_m1.activeSelf || form_m2.activeSelf || thank_you_t.activeSelf)
         {
             gameManager.canvasCursorActive = true;
         } else

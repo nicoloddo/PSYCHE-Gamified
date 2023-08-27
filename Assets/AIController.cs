@@ -41,7 +41,7 @@ public class AIController : MonoBehaviour
         player = gameObject.GetComponent<PlayerController>();
         choiceController = choiceCanvas.GetComponent<ChoiceController>();
         actual_enemies_total = gameManager.GetEnemiesTotal();
-        conversation_step = 0;
+        conversation_step = -1;
     }
 
     // Update is called once per frame
@@ -62,8 +62,11 @@ public class AIController : MonoBehaviour
             switch(scene.name)
             {
                 case "Scene1":
-                    if (ratio_enemies < 1.1 && conversation_step==0)
+                    if (ratio_enemies < 1.1 && conversation_step==-1)
+                    {
                         soundManager.PlayConv(1);
+                        conversation_step += 1;
+                    }                        
                     if (ratio_enemies < 0.8 && conversation_step==0)
                         StartCoroutine(AIConversate(conversation_step));
                     if (ratio_enemies < 0.5 && conversation_step==1)
@@ -73,8 +76,11 @@ public class AIController : MonoBehaviour
                     break;
                 
                 case "Scene2":
-                    if (ratio_enemies < 1.1 && conversation_step==0)
+                    if (ratio_enemies < 1.1 && conversation_step==-1)
+                    {
                         soundManager.PlayConv(5);
+                        conversation_step += 1;
+                    } 
                     if (ratio_enemies < 0.95 && conversation_step==0)
                         StartCoroutine(AIConversate(conversation_step));
                     if (ratio_enemies < 0.7 && conversation_step==1)
