@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public int last_dir = 1; // 1 = right, -1 = left
     private float movX, movY;
     private float speedForceAmount;
+    public bool shield_just_used = false;
 
     // PARAMETERS
     private float health;
@@ -323,10 +324,11 @@ public class PlayerController : MonoBehaviour
 
             if (damage > 0)
             {
-                if((health == 1 || health == 3) && AI.active_shield) // final explosion is a shield
+                if(AI.active_shield && (health == 1 || (health == 3 && !shield_just_used)))
                 {
+                    shield_just_used = true;
                     AI.ShieldConversation();
-                    AI.active_shield = false;
+                    AI.shield_life -= 1;
                     Instantiate(explosion_shield, transform.position, Quaternion.identity);
                 }
                 else

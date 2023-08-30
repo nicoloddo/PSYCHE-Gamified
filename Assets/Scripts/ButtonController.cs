@@ -57,6 +57,11 @@ public class ButtonController : MonoBehaviour
         next_page_click = true;
     }
 
+    public void OnInformationSheetShow()
+    {
+        Application.ExternalEval("togglePDF(true);"); // to show the PDF
+    }
+
     public void OnTerminateAIClick()
     {
         terminate_click = true;
@@ -112,5 +117,12 @@ public class ButtonController : MonoBehaviour
     public void OnQuitClick()
     {
         Application.Quit();
+    }
+
+    public void OnAudioTestClick()
+    {
+        SoundManager sm = FindObjectOfType<SoundManager>();
+        sm.StopAudioTest();
+        sm.PlayAudioTest();
     }
 }

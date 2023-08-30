@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,6 +18,8 @@ using UnityEngine.SceneManagement;
 
 public class DatabaseCommunicator : MonoBehaviour
 {
+    private bool requests_from_unity = true;
+    public int BinsAmount { get; private set; } = -1; // Variable to store the length
 
     [System.Serializable]
     public class ActionLog
@@ -32,12 +35,14 @@ public class DatabaseCommunicator : MonoBehaviour
         public string Bugs;
         public int MOS;
         public bool LowAttention;
+        public int Gamer;
     }
 
     [System.Serializable]
     public class GameData
     {
         public bool AcceptedParticipation;
+        public string Condition;
         public List<ActionLog> Level1;
         public List<ActionLog> Level2;
         public Form FormInfo;
@@ -51,7 +56,7 @@ public class DatabaseCommunicator : MonoBehaviour
     }
 
     private GameData gameData = new GameData();
-    public bool send_live_data = false;
+    //public bool send_live_data = false;
 
     private static DatabaseCommunicator instance;
     void Awake()
@@ -84,7 +89,7 @@ public class DatabaseCommunicator : MonoBehaviour
 
     }
 
-    private void UpdateLog(string action)
+    private ActionLog UpdateLog(string action)
     {
         string time = System.DateTime.Now.ToString("o");
         ActionLog actionLog = new ActionLog
@@ -104,6 +109,13 @@ public class DatabaseCommunicator : MonoBehaviour
         {
             gameData.Level2.Add(actionLog);
         }
+
+        return actionLog;
+    }
+
+    public void UpdateCondition()
+    {
+        gameData.Condition = PlayerPrefs.GetString("Condition");
     }
 
     public string GetLogJSON()
@@ -116,23 +128,36 @@ public class DatabaseCommunicator : MonoBehaviour
     {
         Debug.Log("Form accepted");
         gameData.AcceptedParticipation = true;
+        SendLiveData("Form accepted");
     }
 
     public void SendLiveData(string action)
     {
-        UpdateLog(action);
-        //Debug.Log(GetLogJSON());
+        ActionLog actionLog = UpdateLog(action);
 
-        var function = action + "()";
+        // Prepare the JSON data
+        string newData = JsonUtility.ToJson(actionLog);
 
-        if (send_live_data)
+        // Retrieve the binId from PlayerPrefs
+        string binId = PlayerPrefs.GetString("userBinId", null);
+
+        // If binId doesn't exist, you might want to handle it (e.g., by creating a new bin)
+        if (string.IsNullOrEmpty(binId))
         {
-            #if UNITY_WEBGL && !UNITY_EDITOR
-            Application.ExternalEval(function);
-            #endif
+            Debug.LogError("Bin ID is not set. Cannot send data.");
+            return;
         }
 
-        //Debug.Log("Sending data from Unity: " + function);
+        // Call UpdateUserBin as a coroutine
+        APIHandler apiHandler = FindObjectOfType<APIHandler>();
+        if(apiHandler != null)
+        {
+            StartCoroutine(apiHandler.UpdateUserBin(binId, newData));
+        }
+        else
+        {
+            Debug.LogError("APIHandler not found in the scene!");
+        }
     }
 
     public void SendFullData()
@@ -143,14 +168,29 @@ public class DatabaseCommunicator : MonoBehaviour
         //Debug.Log(logJSON);
 
         string escapedData = logJSON;
-        string call = "FinalData('" + escapedData + "')";
 
-        #if UNITY_WEBGL && !UNITY_EDITOR
-        Application.ExternalEval(call);
-        #endif        
+        if(requests_from_unity)
+        {
+            APIHandler apiHandler = FindObjectOfType<APIHandler>();
+            if(apiHandler != null)
+            {
+                apiHandler.SendDataToBin(escapedData);
+            }
+            else
+            {
+                Debug.LogError("APIHandler not found in the scene!");
+            }
+        } 
+        else 
+        {
+            string call = "FinalData('" + escapedData + "')";
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            Application.ExternalEval(call);
+            #endif 
+        }
     }
 
-    public void SendForm(string why, string bugs, int mos, bool low_attention)
+    public void SendForm(string why, string bugs, int mos, bool low_attention, int gamer)
     {
         // Check if 'why' is null, empty, or consists only of white-space characters
         if (string.IsNullOrWhiteSpace(why))
@@ -171,7 +211,8 @@ public class DatabaseCommunicator : MonoBehaviour
             Why = escapedWhy,
             Bugs = escapedBugs,
             MOS = mos,
-            LowAttention = low_attention
+            LowAttention = low_attention,
+            Gamer = gamer
         };
 
         SendFullData();

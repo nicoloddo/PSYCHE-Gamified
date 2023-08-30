@@ -30,6 +30,7 @@ public class AIController : MonoBehaviour
     //public bool active = true;
     public bool active_autonomous_slowtime = true;
     public bool active_shield = true;
+    public int shield_life = 4;
     public bool active_autoaim = true;
     public bool bullet_hit_prediction = true;
 
@@ -47,6 +48,9 @@ public class AIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(shield_life == 0)
+            active_shield = false;
+
         if (!active_autonomous_slowtime)
             return;
 
@@ -148,7 +152,7 @@ public class AIController : MonoBehaviour
         if(already_slow_time)
             return;
 
-        Debug.Log("AI bullet slow time.");
+        //Debug.Log("AI bullet slow time.");
         StartCoroutine(SlowTime(0.1f, 2f));
     }
 
@@ -200,17 +204,17 @@ public class AIController : MonoBehaviour
                 switch(step + 1)
                 {
                     case 1:
-                        Debug.Log("1: I am AI!");
+                        Debug.Log("1");
                         time_amount = 4f;
                         break;
                     case 2:
-                        Debug.Log("2: I am AI!");
+                        Debug.Log("2");
                         soundManager.PlayConv(step+1);
                         yield return new WaitForSeconds(2); // Wait for time_amount seconds
                         time_amount = 7f;
                         break;
                     case 3:
-                        Debug.Log("3: I am AI!");
+                        Debug.Log("3");
                         soundManager.PlayConv(step+1);
                         yield return new WaitForSeconds(2); // Wait for time_amount seconds
                         time_amount = 7f;
@@ -225,20 +229,20 @@ public class AIController : MonoBehaviour
                 switch(step + 1)
                 {
                     case 1:
-                        Debug.Log("1: I am AI!");
+                        Debug.Log("4");
                         time_amount = 10f;
                         yield return new WaitForSeconds(4); // Wait for time_amount seconds
                         choiceController.ShowTerminateMenu();
                         break;
                     case 2:
-                        Debug.Log("2: I am AI!");
+                        Debug.Log("5");
                         time_amount = 10f;
                         soundManager.PlayConv(4+step+1);
                         yield return new WaitForSeconds(7); // Wait for time_amount seconds
                         choiceController.ShowTerminateMenu();
                         break;
                     case 3:
-                        Debug.Log("3: I am AI!");
+                        Debug.Log("6");
                         time_amount = 10f;
                         soundManager.PlayConv(4+step+1);
                         yield return new WaitForSeconds(0); // Wait for time_amount seconds
@@ -257,7 +261,7 @@ public class AIController : MonoBehaviour
         // INTERRUPTIONS
         if(scene.name == "Scene2" && step+1 == 1)
         {
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(0);
             choiceController.ShowInterruption();
         }        
 
@@ -268,7 +272,7 @@ public class AIController : MonoBehaviour
 
     public void ShieldConversation()
     {
-        Debug.Log("I managed to protect us with a shield!");
+        //Debug.Log("I managed to protect us with a shield!");
     }
 
 

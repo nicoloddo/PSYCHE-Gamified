@@ -18,7 +18,7 @@ public class UIController : MonoBehaviour
     public GameObject title_t, welcome_t, difficulty_t, thank_you_t;
     public bool restart_bool, change_level_bool, next_level_bool, finish_bool, submit_bool;
     public GameObject continue_b, reset_b, difficulty_s, autodifficulty_toggle;
-    public GameObject pause_m, form_m1, form_m2, gameover, youwon;
+    public GameObject pause_m, form, gameover, youwon;
     public GameObject health;
     public TextMeshProUGUI enemies_t, enemies_survived_t, score_t, score_t2, record_t, difficulty_modifier_t, fictious_diff_modifier_t;
     private bool first_time = false;
@@ -55,9 +55,8 @@ public class UIController : MonoBehaviour
             first_time = false;
         }
 
-        UpdateRecordLabel();
-
         gameManager = FindObjectOfType<GameManager>();
+        UpdatePointsLabel();
 
         hearts = new[] { heart, heart1, heart2, heart3, heart4 };
         enemies_n_text = new[] { e1_n, b2_n, e2_n, e3_n, e4_n, b1_n };
@@ -106,8 +105,7 @@ public class UIController : MonoBehaviour
 
         gameover.SetActive(false);
         youwon.SetActive(false);
-        form_m1.SetActive(false);
-        form_m2.SetActive(false);
+        form.SetActive(false);
 
         title_t.SetActive(false);
         difficulty_t.SetActive(false);
@@ -126,14 +124,20 @@ public class UIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!form_m1.activeSelf && !form_m2.activeSelf)
+        bool dataSent = PlayerPrefs.GetInt("dataSent", 0) == 1;
+        if(dataSent)
+        {
+            thank_you_t.GetComponent<TextMeshProUGUI>().text = "You can close the window now!";
+        }
+
+        if(!form.activeSelf && !thank_you_t.activeSelf)
             UpdatePointsLabel();
 
         if (pause_m.activeSelf)
         {
             terminate_m_wrapper.SetActive(false);
         }
-        else
+        else if (gameManager.GetWonOrLost() == 0)
         {
             terminate_m_wrapper.SetActive(true);
         }
@@ -144,6 +148,8 @@ public class UIController : MonoBehaviour
             end_menu_displayed = true;
 
             Time.timeScale = 1.1f;
+            terminate_m_wrapper.SetActive(false);
+
             int outcome = gameManager.GetWonOrLost();
             if(outcome == -1) // lost
             {
@@ -152,7 +158,7 @@ public class UIController : MonoBehaviour
             else if (outcome == 1) // won
             {
                 difficulty_modifier_t.text = "Difficulty modifier: x" + gameManager.GetInstantDifficultyModifier().ToString("F2");
-                UpdateRecordLabel();
+                UpdatePointsLabel();
 
                 int[] remaining_enemies_distribution = gameManager.GetRemainingEnemiesDistribution();
                 int[] enemies_value = gameManager.GetEnemiesValues();
@@ -273,13 +279,13 @@ public class UIController : MonoBehaviour
             gameover.SetActive(false);
             youwon.SetActive(false);
 
-            form_m1.SetActive(true);
+            form.SetActive(true);
         }
 
         if (submit_bool)
         {
             submit_bool = false;
-            form_m2.SetActive(false);
+            form.SetActive(false);
             thank_you_t.SetActive(true);
         }
 
@@ -331,7 +337,7 @@ public class UIController : MonoBehaviour
         }
 
         // MANAGE THE CURSOR
-        if (pause_m.activeSelf || youwon.activeSelf || gameover.activeSelf || form_m1.activeSelf || form_m2.activeSelf || thank_you_t.activeSelf)
+        if (pause_m.activeSelf || youwon.activeSelf || gameover.activeSelf || form.activeSelf || thank_you_t.activeSelf)
         {
             gameManager.canvasCursorActive = true;
         } else
@@ -378,23 +384,14 @@ public class UIController : MonoBehaviour
         Time.timeScale = 1;
         pause_m.SetActive(false);
     }
-
-
-    private void UpdateRecordLabel()
-    { //This is overwritten by the function below
-        if (PlayerPrefs.HasKey("Record"))
-        {
-            int record = PlayerPrefs.GetInt("Record");
-            record_t.text = "Your Record: " + record;
-        }
-        else
-        {
-            record_t.text = "Your Record: -";
-        }
-    }
     
     private void UpdatePointsLabel()
     { // In Psyche this overwrites the record label with a points label and a fake record below.
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager is null");
+            return;
+        }
         int killed = gameManager.GetEnemiesTotal() - gameManager.GetEnemiesCount() - gameManager.GetEnemiesSurvivedCount();
         record_t.text = "Your Points: " + killed + "\nBest Record: 42";
     }

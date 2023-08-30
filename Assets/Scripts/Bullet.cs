@@ -51,7 +51,7 @@ public class Bullet : MonoBehaviour
 
             if(!immune && !hit_checked)
             {
-                Debug.Log("Bullet hit incoming! Slowing time...");
+                //Debug.Log("Bullet hit incoming! Slowing time...");
                 AI.BulletTowardsPlayer();
                 hit_checked = true;                
             }

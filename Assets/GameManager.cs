@@ -294,7 +294,7 @@ public class GameManager : MonoBehaviour
                     case "Scene1":
                     robotAttackLevel = -1;
                     SetRobotLevelParams();
-                    enemySize = 1.2f; //1.5
+                    enemySize = 1.15f; //1.5
                     enemySpeed = 4.3f; //4.3
                     break;
                     case "Scene2":

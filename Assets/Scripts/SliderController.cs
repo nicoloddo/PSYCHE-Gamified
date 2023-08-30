@@ -71,12 +71,45 @@ public class SliderController : MonoBehaviour
         UpdateText(label);
     }
 
+    public void OnGamerChange()
+    {
+        string label;
+
+        switch((int)GetComponent<Slider>().value)
+        {
+            case 1:
+                label = "1 - Never";
+                break;
+            case 2:
+                label = "2 - Hardly ever";
+                break;
+            case 3:
+                label = "3 - Sometimes";
+                break;
+            case 4:
+                label = "4 - Often";
+                break;
+            case 5:
+                label = "5 - Daily";
+                break;
+            default:
+                label = "";
+                break;
+        }
+        UpdateText(label);
+    }
+
     public int GetDifficultyValue()
     {
         return (int)GetComponent<Slider>().value;
     }
 
     public int GetMOSValue()
+    {
+        return (int)GetComponent<Slider>().value;
+    }
+
+    public int GetGamerValue()
     {
         return (int)GetComponent<Slider>().value;
     }

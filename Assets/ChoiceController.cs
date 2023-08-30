@@ -8,16 +8,19 @@ using UnityEditor;
 public class ChoiceController : MonoBehaviour
 {
     private DatabaseCommunicator db;
+    private SoundManager sm;
     private GameManager gameManager;
     public ProgressBarController progressBar;
     public GameObject terminate_m;
     public GameObject terminateAI_b, continueAI_b, interruption_b;
-    public SliderController MOSSlider;
+    public SliderController MOSSlider, GamerSlider;
     public GameObject LowAttentionToggle;
 
     public TextMeshProUGUI why, bugs;
     public int mos = -1;
+    public int gamer = -1;
     public bool low_attention = false;
+    private bool condition_set = false;
 
     public GameObject Interruption;
     public bool level2interruption_is_done = false;
@@ -26,13 +29,24 @@ public class ChoiceController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        condition_set = false;
         terminate_m.SetActive(false);
         gameManager = FindObjectOfType<GameManager>();
+
+        db = FindObjectOfType<DatabaseCommunicator>();
+        sm = FindObjectOfType<SoundManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (PlayerPrefs.HasKey("Condition") && !condition_set)
+        {
+            condition_set = true;
+            db.UpdateCondition();
+            sm.SetCondition();
+        }
+
         if (terminateAI_b.GetComponent<ButtonController>().terminate_click)
         {
             terminateAI_b.GetComponent<ButtonController>().terminate_click = false;
@@ -74,6 +88,7 @@ public class ChoiceController : MonoBehaviour
         }
 
         mos = MOSSlider.GetMOSValue();
+        gamer = GamerSlider.GetGamerValue();
         low_attention = LowAttentionToggle.GetComponent<Toggle>().isOn;
     }
 
@@ -114,32 +129,27 @@ public class ChoiceController : MonoBehaviour
 
     public void SendAccepted()
     {
-        db = FindObjectOfType<DatabaseCommunicator>();
         db.Accepted();
     }
 
     public void SendAction(string action)
     {
-        Debug.Log("Sending action: " + action);
-        db = FindObjectOfType<DatabaseCommunicator>();
-
         if(action == "ChoiceTimeExpired" && ! terminate_m.activeSelf)
         {
             return;
         }
 
         db.SendLiveData(action);
+        Debug.Log("Sending action: " + action);
     }
 
     public void SendFullData()
     {
-        db = FindObjectOfType<DatabaseCommunicator>();
         db.SendFullData();
     }
 
     public void SendForm()
     {
-        db = FindObjectOfType<DatabaseCommunicator>();
-        db.SendForm(why.text, bugs.text, mos, low_attention);
+        db.SendForm(why.text, bugs.text, mos, low_attention, gamer);
     }
 }
