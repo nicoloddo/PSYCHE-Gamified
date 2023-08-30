@@ -17419,6 +17419,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 1809568125176592199, guid: 5cdba3a14d33b494cae6b6b38795e08f, type: 3}
+      propertyPath: shield_life
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1809568125176592199, guid: 5cdba3a14d33b494cae6b6b38795e08f, type: 3}
       propertyPath: choiceCanvas
       value: 
       objectReference: {fileID: 854153617}

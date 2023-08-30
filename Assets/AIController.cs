@@ -30,7 +30,7 @@ public class AIController : MonoBehaviour
     //public bool active = true;
     public bool active_autonomous_slowtime = true;
     public bool active_shield = true;
-    public int shield_life = 4;
+    public int shield_life = 5;
     public bool active_autoaim = true;
     public bool bullet_hit_prediction = true;
 
