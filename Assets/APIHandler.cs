@@ -29,42 +29,61 @@ public class APIHandler : MonoBehaviour
 
     public IEnumerator SetCondition()
     {
+        // Fetch the most recent bin_id
         string url = "https://api.jsonbin.io/v3/c/uncategorized/bins/";
-        int BinsAmount = -1;
-
         UnityWebRequest request = UnityWebRequest.Get(url);
         request.SetRequestHeader("X-Master-key", API_KEY);
         request.SetRequestHeader("Content-Type", "application/json");
-
-        Debug.Log("Sending Request");
         yield return request.SendWebRequest();
-
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError(request.error);
-            BinsAmount = -1; // set length to -1 if there's an error.
-        }
-        else
-        {
-            // Count the number of "record" occurrences, which gives the number of items in the array
-            BinsAmount = System.Text.RegularExpressions.Regex.Matches(request.downloadHandler.text, "\"record\":").Count;
+            yield break;
         }
 
-        Debug.Log("Number of bins: " + BinsAmount);
+        JSONNode jsonNode = JSON.Parse(request.downloadHandler.text);
+        string mostRecentBinId = jsonNode[0]["record"];
 
-        if (BinsAmount >= 0)
+        // Fetch the bin using the most recent bin_id
+        string binUrl = $"https://api.jsonbin.io/v3/b/{mostRecentBinId}";
+        UnityWebRequest binRequest = UnityWebRequest.Get(binUrl);
+        binRequest.SetRequestHeader("X-Master-key", API_KEY);
+        binRequest.SetRequestHeader("Content-Type", "application/json");
+        yield return binRequest.SendWebRequest();
+        if (binRequest.result == UnityWebRequest.Result.ConnectionError || binRequest.result == UnityWebRequest.Result.ProtocolError)
         {
-            if (BinsAmount % 2 == 0)  // Check if BinsAmount is even
-            {
-                PlayerPrefs.SetString("Condition", "With");
-                condition = "With";
-            }
-            else
-            {
-                PlayerPrefs.SetString("Condition", "Without");
-                condition = "Without";
-            }
-        } 
+            Debug.LogError(binRequest.error);
+            yield break;
+        }
+
+        JSONNode binJson = JSON.Parse(binRequest.downloadHandler.text);
+        JSONNode liveData = binJson["record"]["LiveData"];
+
+        if (liveData == null)
+        {
+            // LiveData field is not present
+            yield break;
+        }
+
+        string action = liveData[0]["action"];
+        if (action == null)
+        {
+            // action field is not present in the first element
+            yield break;
+        }
+
+        if (action.EndsWith("Condition set to With"))
+        {
+            Debug.Log("Last condition: With");
+            PlayerPrefs.SetString("Condition", "Without");
+            condition = "Without";
+        }
+        else if (action.EndsWith("Condition set to Without"))
+        {
+            Debug.Log("Last condition: Without");
+            PlayerPrefs.SetString("Condition", "With");
+            condition = "With";
+        }
     }
 
     public IEnumerator CreateNewBinForUser()
@@ -204,6 +223,9 @@ public class APIHandler : MonoBehaviour
                 Debug.Log("Data not fully valid.");
             }
         }
+
+        getRequest.Dispose();
+        putRequest.Dispose();
     }
 
     private bool ValidateData(string jsonData)
