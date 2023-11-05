@@ -1,8 +1,5 @@
-# ROBOGUY
+# GAMIFIED PSYCHE
 
-Roboguy is a robot-killing robot. It gains consciousness and fights its programmed instincts
-to destroy itself. Players can control Roboguy’s movement with arrow keys and fight the
-autoaim by rotating with ‘a’ or ‘d’. The game mechanics involve missing the targets while
-trying instead to hit yourself with edge-bouncing bullets.
+Gamified user study on the emotional impact of breathing in synthesised voices for virtual agents. It is part of the PSYCHE project
 
-[![Watch the video](https://i.imgur.com/ISEJThs.png)](https://youtu.be/nlE-GZxIl0U)
+If you would like to try the project, please [click here](https://nicoloddo.github.io/Psyche). The study is now closed and your response will not be saved.
