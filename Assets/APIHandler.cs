@@ -13,6 +13,18 @@ public class APIHandler : MonoBehaviour
     public bool dataSent;
     public string condition;
     private bool already_communicated = false;
+    public bool STOPPED_EXPERIMENT = true;
+
+    private void Awake()
+    {
+        if(STOPPED_EXPERIMENT) // If the experiment is finished, the APIHandler should not send anything anymore
+        {
+            PlayerPrefs.SetString(BIN_ID_PREF, "experiment_finished"); // Fake that the user exists
+            condition = "With"; // Set default condition
+            PlayerPrefs.SetString("Condition", "With"); // Set default condition
+            PlayerPrefs.SetInt("dataSent", 1); // Fake the fact that we sent everything
+        }
+    }
 
     private void Start()
     {
@@ -38,6 +50,8 @@ public class APIHandler : MonoBehaviour
         if (request.result == UnityWebRequest.Result.ConnectionError || request.result == UnityWebRequest.Result.ProtocolError)
         {
             Debug.LogError(request.error);
+            condition = "With";
+            PlayerPrefs.SetString("Condition", "With");
             yield break;
         }
 

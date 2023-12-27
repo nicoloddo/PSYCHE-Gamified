@@ -7,13 +7,14 @@ public class NewUserController : MonoBehaviour
 {
     public GameObject NewUserQuestion, Reload;
     public ButtonController yes, no;
+    public bool STOPPED_EXPERIMENT = true;
 
     // Start is called before the first frame update
     void Start()
     {
         Scene currentScene = SceneManager.GetActiveScene();
 
-        if (PlayerPrefs.HasKey("userBinId") && PlayerPrefs.GetInt("dataSent", 0) == 1 && currentScene.name == "Scene1" )
+        if (!STOPPED_EXPERIMENT && PlayerPrefs.HasKey("userBinId") && PlayerPrefs.GetInt("dataSent", 0) == 1 && currentScene.name == "Scene1" )
         {
             NewUserQuestion.SetActive(true);
         } else {

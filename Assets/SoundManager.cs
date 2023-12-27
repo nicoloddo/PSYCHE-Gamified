@@ -70,6 +70,8 @@ public class SoundManager : MonoBehaviour
                     term3 = term3_no;
                     break;
             }
+        } else {
+            Debug.Log("Condition is not set, no audio has been linked.");
         }
     }
 

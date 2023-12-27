@@ -15465,6 +15465,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataSent: 0
   condition: 
+  STOPPED_EXPERIMENT: 1
 --- !u!1 &1813425194 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5292826285764798047, guid: d20ea113b1db3fc40892e3e6419edb97, type: 3}
